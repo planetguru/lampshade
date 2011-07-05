@@ -1,0 +1,66 @@
+Introduction
+-----------------
+
+The builder is no more than a basic Makefile. This will result in a full lamp build including apache, mysql, php, libjpeg, libpng, m4, autoconf, libxml, apache configs, database setup, pecl packages and php configuration.
+
+The whole build process takes a while, because everything is compiled from source on your system. 
+
+If you want to modify your build, for example, to include additional php extensions, or apache modules, you can simply modify the Makefile and re-run 'make all', or simply the target which you have updated.
+
+Please note that you should also remember to change the default username and password on the database if you intend to use it.
+
+
+Installation
+----------------
+
+If you are running Ubuntu, I recommend installing these packages first:
+
+   sudo apt-get install cvs
+   sudo apt-get install libncurses5-dev
+   sudo apt-get install vim
+   sudo apt-get install subversion
+
+Then proceed with the following steps:
+
+
+$ make all
+$ make install
+$ make website
+
+Note, you can now also start your mysql server and apache server by running 
+
+$ make start
+
+you will then be ready to rock
+
+
+Running Lampshade
+-------------------
+
+Once the installation is complete, you should be able to simply type 'lampshade' into the address bar of your browser and you will see a working system.
+
+Of course, if you are viewing from a different machine to where you have installed lampshade, you will have to set up an entry in your local hosts file to point 'lampshade' to the ip address of the machine you have installed on.
+
+
+Acknowledgments:
+------------------
+
+This utility was put together by Chris Lacy-Hulbert to alleviate some boredom and also to allow quick installation of apache software onto a variety of linux systems
+
+
+Copyright notice:
+-----------------
+
+ (C) 2008 Chris Lacy-Hulbert
+
+This software is provided 'as-is', without any express or implied warranty.  In no event will the authors be held liable for any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
