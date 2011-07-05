@@ -1,5 +1,5 @@
 project=Lampshade
-webroot=${webroot}
+webroot=/export/
 srcdir=/usr/src/
 zlib=zlib-1.2.5
 libxml2=libxml2-git-snapshot.tar.gz
