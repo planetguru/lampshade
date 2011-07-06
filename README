@@ -5,7 +5,7 @@ The builder is no more than a basic Makefile. This will result in a full lamp bu
 
 The whole build process takes a while, because everything is compiled from source on your system. 
 
-If you want to modify your build, for example, to include additional php extensions, or apache modules, you can simply modify the Makefile and re-run 'make all', or simply the target which you have updated.
+If you want to modify your build, for example, to include additional php extensions, or apache modules, you can simply modify the Makefile and re-run 'make all', or just 'make' the target which you have updated.
 
 Please note that you should also remember to change the default username and password on the database if you intend to use it.
 
@@ -45,7 +45,7 @@ Of course, if you are viewing from a different machine to where you have install
 Acknowledgments:
 ------------------
 
-This utility was put together by Chris Lacy-Hulbert to alleviate some boredom and also to allow quick installation of apache software onto a variety of linux systems
+This utility was put together by Chris Lacy-Hulbert just for fun and also to allow quick installation of apache software onto a variety of linux systems
 
 
 Copyright notice:
