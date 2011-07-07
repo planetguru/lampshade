@@ -1,4 +1,4 @@
-project=Lampshade
+project=lampshade
 webroot=/export/
 srcdir=/usr/src/
 zlib=zlib-1.2.5
@@ -63,7 +63,7 @@ libjpeg:
 
 mysql:
 	## build the mysql server and client libs
-	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://dev.mysql.com/get/Downloads/MySQL-5.5/${mysql}.tar.gz/from/ftp://ftp.mirrorservice.org/sites/ftp.mysql.com/ ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
+	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://dev.mysql.com/get/Downloads/MySQL-5.5/${mysql}.tar.gz/from/ftp://ftp.mirrorservice.org/sites/ftp.mysql.com/ ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
 
 openssl:
 	## install openssl
@@ -91,7 +91,7 @@ install:
 	sleep 5
 
 	## start mysql server before trying to build the database
-	cd /usr/local/mysql && scripts/mysqld --user=mysql &  
+	cd /usr/local/mysql && bin/mysqld --user=mysql &  
 	sleep 10
 	
 	## move the apache configs into place
@@ -126,7 +126,7 @@ website:
 
 start:
 	## start mysql server 
-	cd /usr/local/mysql && scripts/mysqld_safe --user=mysql &  
+	cd /usr/local/mysql && bin/mysqld_safe --user=mysql &  
 	sleep 10
 	
 	## start apache
@@ -136,7 +136,7 @@ restart:
 	## restart mysql server 
 	/usr/local/mysql/bin/mysqladmin shutdown
 	sleep 5
-	cd /usr/local/mysql && scripts/mysqld_safe --user=mysql &  
+	cd /usr/local/mysql && bin/mysqld_safe --user=mysql &  
 	sleep 10
 	
 	## restart apache
