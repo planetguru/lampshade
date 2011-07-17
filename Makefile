@@ -98,7 +98,6 @@ install:
 	## copy the web and configuration folders into /export
 	mkdir -p ${webroot}${project} && cd ${srcdir}/${project} 
 	if [ -d ${webroot}${project}/www ] ; then rm -rf ${webroot}${project}/www; fi; cp -R htdocs ${webroot}${project}/www
-	if [ -d ${webroot}${project}/etc ] ; then rm -rf ${webroot}${project}/etc; fi; cp -R htlibs ${webroot}${project}/etc
 	if [ -d /var/log/${project}] ; then touch /var/log/${project}/error.log; fi;
 	## else mkdir -p /var/log/lampshade && touch /var/log/lampshade/error.log 
 
