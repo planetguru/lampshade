@@ -63,7 +63,7 @@ libjpeg:
 
 mysql:
 	## build the mysql server and client libs
-	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}.tar.gz ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
+	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}-linux2.6-i686.tar.gz ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
 
 openssl:
 	## install openssl
