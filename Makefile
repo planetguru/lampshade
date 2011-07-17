@@ -25,7 +25,7 @@ all: cmake zlib m4 autoconf libxml2 openssl apache mysql curl libjpeg png php ex
 
 cmake:
 	## more recent MySQL builds require cmake - Oracle have done some work here :)
-	cd ${srcdir}; [ -e ${cmake}.tar.gz ] && wget http://www.cmake.org/files/v2.8/${cmake}.tar.gz ; tar -zxvf ${cmake}.tar.gz && cd ${cmake} && ./configure && make && make install
+	cd ${srcdir}; [ ! -e ${cmake}.tar.gz ] && wget http://www.cmake.org/files/v2.8/${cmake}.tar.gz ; tar -zxvf ${cmake}.tar.gz && cd ${cmake} && ./configure && make && make install
 
 libxml2:
 	## install libxml2
