@@ -8,7 +8,7 @@ autoconf=autoconf-2.13
 http=httpd-2.2.19
 curl=curl-7.21.2
 gd=gd-2.0.35
-mysql=mysql-5.5.11
+mysql=mysql-5.5.14
 openssl=openssl-1.0.0a
 php=php-5.3.3
 libpng=libpng-1.5.2
@@ -63,7 +63,7 @@ libjpeg:
 
 mysql:
 	## build the mysql server and client libs
-	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://dev.mysql.com/get/Downloads/MySQL-5.5/${mysql}.tar.gz/from/ftp://ftp.mirrorservice.org/sites/ftp.mysql.com/ ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
+	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}.tar.gz ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
 
 openssl:
 	## install openssl
