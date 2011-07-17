@@ -86,43 +86,24 @@ extensions:
 	locate apc.so || printf "yes\n" | pecl install apc 
 
 install:
-	# stop mysql server if it is already running
-	/usr/local/mysql/bin/mysqladmin shutdown
-	sleep 5
-
-	## start mysql server before trying to build the database
-	cd /usr/local/mysql && bin/mysqld --user=mysql &  
-	sleep 10
-	
 	## move the apache configs into place
 	cd ${srcdir}/${project} && cp httpd.conf /usr/local/apache2/conf/. && cp httpd-vhosts.conf /usr/local/apache2/conf/extra/. && cp ${project}.conf /usr/local/apache2/conf/extra/.
 
 	## move php.ini into place
 	cp ${srcdir}/${project}/php.ini /usr/local/lib/php.ini
 
-	## set up a hosts file entry for the ${project} virtual host
+	## set up a hosts file entry for ${project} virtual host
 	echo "127.0.0.1 ${project}" >> /etc/hosts
 
 	## copy the web and configuration folders into /export
 	mkdir -p ${webroot}${project} && cd ${srcdir}/${project} 
-	cp -R htdocs ${webroot}${project}/www
-	cp -R htlibs ${webroot}${project}/etc
+	if [ -d ${webroot}${project}/www ] ; then rm -rf ${webroot}${project}/www; fi; cp -R htdocs ${webroot}${project}/www
+	if [ -d ${webroot}${project}/etc ] ; then rm -rf ${webroot}${project}/etc; fi; cp -R htlibs ${webroot}${project}/etc
+	if [ -d /var/log/${project}] ; then touch /var/log/${project}/error.log; fi;
+	## else mkdir -p /var/log/lampshade && touch /var/log/lampshade/error.log 
 
 	## done
 	echo "Installation completed - you can now start everything by running 'make start'"
-
-website:
-	## move the apache configs into place
-	cd ${srcdir}/${project} && cp ${project}.conf /usr/local/apache2/conf/extra/.
-
-	## copy the web and configuration folders into /export
-	mkdir -p ${webroot}${project} && cd ${srcdir}/${project} 
-	if [ -d ${webroot}${project}/www ] ; then rm -rf ${webroot}${project}/www; fi; cp -R htdocs ${webroot}${project}/www
-	if [ -d ${webroot}${project}/classes ] ; then rm -rf ${webroot}${project}/classes; fi; cp -R classes ${webroot}${project}/classes
-	if [ -d ${webroot}${project}/etc ] ; then rm -rf ${webroot}${project}/etc; fi; cp -R htlibs ${webroot}${project}/etc
-
-	## done
-	echo "Web directories, apache configurations and ${project} configurations are now in place"
 
 start:
 	## start mysql server 
@@ -131,6 +112,14 @@ start:
 	
 	## start apache
 	/usr/local/apache2/bin/apachectl start
+
+stop:
+	## start mysql server 
+	cd /usr/local/mysql && bin/mysqladmin shutdown
+	sleep 10
+	
+	## start apache
+	/usr/local/apache2/bin/apachectl stop
 
 restart:
 	## restart mysql server 
