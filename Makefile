@@ -10,8 +10,8 @@ curl=curl-7.21.2
 gd=gd-2.0.35
 mysql=mysql-5.5.14
 openssl=openssl-1.0.0a
-php=php-5.3.3
-libpng=libpng-1.5.2
+php=php-5.3.6
+libpng=libpng-1.5.4
 cmake=cmake-2.8.4
 
 
@@ -36,7 +36,7 @@ zlib:
 	cd ${srcdir}; [ ! -e ${zlib}.tar.gz ] && wget http://www.zlib.net/${zlib}.tar.gz ; tar -zvxf ${zlib}.tar.gz && cd ${zlib}/ && ./configure && make test && make install 
 
 png:
-	cd ${srcdir}; [ ! -e ${libpng}.tar.gz ] && wget ftp://ftp.simplesystems.org/pub/libpng/png/src/${libpng}.tar.gz ; tar -zxvf ${libpng}.tar.gz && cd ${libpng}/ && ./configure && make && make install
+	cd ${srcdir}; [ ! -e ${libpng}.tar.gz ] && wget http://ignum.dl.sourceforge.net/project/libpng/libpng15/1.5.4/${libpng}.tar.gz ; tar -zxvf ${libpng}.tar.gz && cd ${libpng}/ && ./configure && make && make install
 
 m4:
 	## install m4
@@ -61,9 +61,9 @@ libjpeg:
 	## copy shared object into a place where php's configure can find it
 	if [ -f /usr/local/lib/libjpeg.so ] ; then echo "libjpeg.so already in place."; else echo "Copying new libjpeg shared object into /usr/local/lib/libjpeg.so"; cp /usr/local/lib/libjpeg.so.7.0.0 /usr/lib/libjpeg.so; fi
 
-mysql:
 	## build the mysql server and client libs
-	useradd mysql;  cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://www.mirrorservice.org/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}-linux2.6-i686.tar.gz ; mv ${srcdir}index.html ${srcdir}${mysql}; tar -zxvf ${mysql}-linux2.6-i686.tar.gz && cd ${srcdir}${mysql}-linux2.6-i686 && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql/bin && chown -R mysql .; chgrp -R mysql .; chmod -R 744 scripts;  scripts/mysql_install_db --user=mysql; 
+mysql:	
+	groupadd mysql; useradd -r -g mysql mysql; cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://mirrors.ukfast.co.uk/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}.tar.gz ; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install &&  cd /usr/local/mysql; chown -R mysql. ; chgrp -R mysql .; scripts/mysql_install_db --user=mysql; chown -R root .; chown -R mysql data && cp support-files/my-medium.cnf /etc/my.cnf
 
 openssl:
 	## install openssl
