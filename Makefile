@@ -62,6 +62,7 @@ install:
 	sleep 10
 	
 	## set up the torkalot database
+	## note, installdb.sh should be a mysqldump of the database you want to build
 	-cd ${srcdir}/torkalot && /usr/local/mysql/bin/mysql < installdb.sh
 
 	## close the database now
@@ -76,12 +77,13 @@ install:
 #	cd ${srcdir}/torkalot && cp httpd.conf /usr/local/apache2/conf/. && cp httpd-vhosts.conf /usr/local/apache2/conf/extra/. && cp torkalot.conf /usr/local/apache2/conf/extra/.
 
 	## move php.ini into place
-	cp ${srcdir}/torkalot/php.ini /usr/local/lib/php.ini
+	cp ${srcdir}/lampshade/php.ini /usr/local/lib/php.ini
 
 	## set up a hosts file entry for the torkalot virtual host
-	echo "127.0.0.1 torkalot" >> /etc/hosts
+	echo "127.0.0.1 lampshade" >> /etc/hosts
 
 	## copy the web and configuration folders into /export
+	# note: 'torkalot' is a throwback from when this was used for torkalot project. Rename this location if it matters to you
 	mkdir -p /export/torkalot && cd ${srcdir}/torkalot 
 	cp -R htdocs /export/torkalot/www
 	cp -R htlibs /export/torkalot/etc
@@ -91,10 +93,10 @@ install:
 
 website:
 	## move the apache configs into place
-	cd ${srcdir}/torkalot && cp torkalot.conf /usr/local/apache2/conf/extra/.
+	cd ${srcdir}/lampshade && cp torkalot.conf /usr/local/apache2/conf/extra/.
 
 	## copy the web and configuration folders into /export
-	mkdir -p /export/torkalot && cd ${srcdir}/torkalot 
+	mkdir -p /export/torkalot && cd ${srcdir}/lampshade 
 	if [ -d /export/torkalot/www ] ; then rm -rf /export/torkalot/www; fi; cp -R htdocs /export/torkalot/www
 	if [ -d /export/torkalot/etc ] ; then rm -rf /export/torkalot/etc; fi; cp -R htlibs /export/torkalot/etc
 
