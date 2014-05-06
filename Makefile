@@ -1,107 +1,105 @@
-project=lampshade
-webroot=/export/
 srcdir=/usr/src/
-zlib=zlib-1.2.5
+zlib=zlib-1.2.8.tar.gz
 libxml2=libxml2-git-snapshot.tar.gz
 m4=m4-latest.tar.gz
-autoconf=autoconf-2.13
-http=httpd-2.2.19
-curl=curl-7.21.2
-gd=gd-2.0.35
-mysql=mysql-5.5.14
-openssl=openssl-1.0.0a
-php=php-5.3.6
-libpng=libpng-1.5.4
-cmake=cmake-2.8.4
-
-
-# ubuntu users should install the following packages first. Users of other distros should install their equivalents:
-
-# libncurses5-dev
-# subversion
-
-
-all: cmake zlib m4 autoconf libxml2 openssl apache mysql curl libjpeg png php extensions 
-
-cmake:
-	## more recent MySQL builds require cmake - Oracle have done some work here :)
-	cd ${srcdir}; [ ! -e ${cmake}.tar.gz ] && wget http://www.cmake.org/files/v2.8/${cmake}.tar.gz ; tar -zxvf ${cmake}.tar.gz && cd ${cmake} && ./configure && make && make install
-
-libxml2:
-	## install libxml2
-	cd ${srcdir}; [ ! -e libxml2-git-snapshot.tar.gz ] && wget ftp://xmlsoft.org/libxml2/libxml2-git-snapshot.tar.gz ; tar -zvxf libxml2-git-snapshot.tar.gz && cd libxml* && ./configure && make && make install
-
-zlib: 
+all:
+	
+	## on debian systems, install the follwoing first:
+	# 
+	#   sudo apt-get install cmake
+	#   sudo apt-get install libncurses5-dev
+	#   sudo apt-get install libxml2-dev
+	#   sudo apt-get install autoconf
+	
 	## install zlib
-	cd ${srcdir}; [ ! -e ${zlib}.tar.gz ] && wget http://www.zlib.net/${zlib}.tar.gz ; tar -zvxf ${zlib}.tar.gz && cd ${zlib}/ && ./configure && make test && make install 
+	cd ${srcdir}; [ ! -e zlib-1.2.8.tar.gz ] && wget http://zlib.net/zlib-1.2.8.tar.gz ; tar -zxvf zlib-1.2.8.tar.gz; cd zlib-1.2.8/ && ./configure && make && make install
 
-png:
-	cd ${srcdir}; [ ! -e ${libpng}.tar.gz ] && wget http://ignum.dl.sourceforge.net/project/libpng/libpng15/1.5.4/${libpng}.tar.gz ; tar -zxvf ${libpng}.tar.gz && cd ${libpng}/ && ./configure && make && make install
+        ## install apache
+	cd ${srcdir}; [ ! -e httpd-2.2.27.tar.gz ] && wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/httpd/httpd-2.2.27.tar.gz; tar -zxvf httpd-2.2.27.tar.gz; cd httpd-2.2.27 && ./configure --enable-so --enable-rewrite --enable-deflate --enable-expires --with-included-apr  && make && make install 
 
-m4:
-	## install m4
-	cd ${srcdir} ; [ ! -e m4-latest.tar.gz ] && wget http://ftp.gnu.org/gnu/m4/m4-latest.tar.gz ; tar -zvxf m4-latest.tar.gz && cd m4* && ./configure && make && make install 
-
-autoconf:
-	## install autoconf
-	cd ${srcdir} ; [ ! -e ${autoconf}.tar.gz ] && wget http://ftp.gnu.org/gnu/autoconf/${autoconf}.tar.gz ; tar -zvxf ${autoconf}.tar.gz && cd ${autoconf}/ && ./configure && make && make install
-
-apache:
-	## install apache
-	cd ${srcdir} ; [ ! -e ${http}.tar.gz ] && wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/httpd/${http}.tar.gz ; tar -zxvf ${http}.tar.gz && cd ${http}/ && ./configure --enable-so --enable-rewrite --enable-deflate --enable-expires && make && make install
-
-curl:
 	## install curl
-	cd ${srcdir} ; [ ! -e ${curl}.tar.gz ] && wget http://curl.haxx.se/download/${curl}.tar.gz ; tar -zxvf ${curl}.tar.gz && cd ${curl} && ./configure && make && make install
+	#http://curl.haxx.se/download/curl-7.36.0.tar.gz
+	cd ${sr#cdir} ; [ ! -e curl-7.36.0.tar.gz ] && wget http://curl.haxx.se/download/curl-7.36.0.tar.gz ; tar -zxvf curl-7.36.0.tar.gz && cd curl-7.36.0 && ./configure && make && make install
 
-libjpeg:
 	## install libjpeg
 	cd ${srcdir} ; [ ! -e jpegsrc.v7.tar.gz ] && wget http://www.ijg.org/files/jpegsrc.v7.tar.gz ; tar -zxvf jpegsrc.v7.tar.gz && cd jpeg-7 && ./configure &&  make && make install && make install-libLTLIBRARIES
 
 	## copy shared object into a place where php's configure can find it
-	if [ -f /usr/local/lib/libjpeg.so ] ; then echo "libjpeg.so already in place."; else echo "Copying new libjpeg shared object into /usr/local/lib/libjpeg.so"; cp /usr/local/lib/libjpeg.so.7.0.0 /usr/lib/libjpeg.so; fi
+	if [ -f /usr/lib/libjpeg.so ] ; then echo "libjpeg.so already in place."; else echo "Copying new libjpeg shared object into /usr/lib/libjpeg.so"; cp  /usr/local/lib/libjpeg.so.7.0.0 /usr/lib/libjpeg.so; fi
+
+	## install gd libs
+	cd ${srcdir} ; [ ! -e libgd-2.1.0.tar.gz ] && wget https://bitbucket.org/libgd/gd-libgd/downloads/libgd-2.1.0.tar.gz ; tar -zxvf libgd-2.1.0.tar.gz && cd libgd-2.1.0 && ./configure --with-jpeg=/usr/local && make && make install
 
 	## build the mysql server and client libs
-mysql:	
-	groupadd mysql; useradd -r -g mysql mysql; cd ${srcdir}; [ ! -e ${mysql}.tar.gz ] && wget http://mirrors.ukfast.co.uk/sites/ftp.mysql.com/Downloads/MySQL-5.5/${mysql}.tar.gz ; tar -zxvf ${mysql}.tar.gz && cd ${srcdir}${mysql} && [ -e CMakeCache.txt ] && rm CMakeCache.txt ; cmake . ; make && make install &&  cd /usr/local/mysql; chown -R mysql. ; chgrp -R mysql .; scripts/mysql_install_db --user=mysql; chown -R root .; chown -R mysql data && cp support-files/my-medium.cnf /etc/my.cnf
+	useradd mysql;  cd ${srcdir}; [ ! -e mysql-5.6.17.tar.gz ] && wget http://cdn.mysql.com/Downloads/MySQL-5.6/mysql-5.6.17.tar.gz ; tar -zxvf mysql-5.6.17.tar.gz && cd ${srcdir}mysql-5.6.17 && cmake .; make; make install; cd /usr/local/mysql; chown -R mysql .; chgrp -R mysql .; scripts/mysql_install_db --user=mysql; chown -R root .; chown -R mysql data; 
 
-openssl:
+#./configure --prefix=/usr/local/mysql && make && make install && cp support-files/my-medium.cnf /etc/my.cnf && cd /usr/local/mysql && chown -R mysql .; chgrp -R mysql .; bin/mysql_install_db --user=mysql; chown -R root .; chown -R root .; chown -R mysql var
+
 	## install openssl
-	cd ${srcdir} ; [ ! -e ${openssl}.tar.gz ] && wget http://www.openssl.org/source/${openssl}.tar.gz ; tar -zxvf ${openssl}.tar.gz && cd ${srcdir}${openssl} && ./config && make && make install 
+	cd ${srcdir} ; [ ! -e openssl-1.0.1g.tar.gz ] && wget http://www.openssl.org/source/openssl-1.0.1g.tar.gz --no-check-certificate; tar -zxvf openssl-1.0.1g.tar.gz && cd ${srcdir}openssl-1.0.1g && ./config -fPIC && make && make install 
 
-php:
 	## install php
-	cd ${srcdir} ; [ ! -e ${php}.tar.gz ] && wget http://uk2.php.net/distributions/${php}.tar.gz ; tar -zxvf ${php}.tar.gz
-
-	## get the apc sources into place and prepare 
-	cd ${srcdir}; cd ${php}; wget http://pecl.php.net/get/APC-3.1.9.tgz; tar -zxvf APC-3.1.9.tgz && mv APC-3.1.9 ./ext/apc ; rm ./configure ; ./buildconf --force
-	
-	## compile php
-	cd ${srcdir}; cd ${php}; ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql  --enable-pdo --with-pdo-mysql=/usr/local/mysql --with-zlib-dir=../${zlib} --with-curl --enable-soap --with-openssl --with-apc && sudo make && sudo make install
+	# http://uk1.php.net/distributions/php-5.5.10.tar.gz
+	cd ${srcdir} ; [ ! -e php-5.5.10.tar.gz ] && wget http://uk1.php.net/distributions/php-5.5.10.tar.gz; tar -zxvf php-5.5.10.tar.gz && cd php-5.5.10 && ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql  --enable-pdo --with-pdo-mysql=shared,/usr/local/mysql --with-zlib-dir=../zlib-1.2.8 --with-jpeg-dir=/usr/lib --with-curl --enable-soap --with-openssl && sudo make && sudo make install
 
 	## install pecl extensions
-	# note - this only works of the locate db is up to date. Run updatedb& first
-extensions:
-	updatedb && locate bbcode.so || pecl install bbcode 
-	locate apc.so || printf "yes\n" | pecl install apc 
+	# PATH=$PATH:/usr/local/apache2/bin:/usr/local/bin && pecl install apc
+	#pecl install pdo && pecl install bbcode && pecl install xdebug
+	pecl install bbcode-1.0.3b1
+	# && pecl install xdebug
+
+	## install apc from source 
+	#cd ${srcdir} &&  svn checkout http://svn.php.net/repository/pecl/apc/trunk && cd ${srcdir}/trunk && phpize && ./configure && make && make install
+
 
 install:
+	# stop mysql server if it is already running
+	-/usr/local/mysql/bin/mysqladmin shutdown
+	sleep 5
+
+	## start mysql server before trying to build the database
+	cd /usr/local/mysql && bin/mysqld_safe --user=mysql &  
+	sleep 10
+	
+	## set up the torkalot database
+	-cd ${srcdir}/torkalot && /usr/local/mysql/bin/mysql < installdb.sh
+
+	## close the database now
+	-cd /usr/local/mysql && bin/mysqladmin shutdown
+
+	## set up the log files
+	mkdir -p /var/log/torkalot
+	mkdir -p /var/log/apache
+	touch /var/log/apache/rewrite.log
+
 	## move the apache configs into place
-	cd ${srcdir}/${project} && cp httpd.conf /usr/local/apache2/conf/. && cp httpd-vhosts.conf /usr/local/apache2/conf/extra/. && cp ${project}.conf /usr/local/apache2/conf/extra/.
+#	cd ${srcdir}/torkalot && cp httpd.conf /usr/local/apache2/conf/. && cp httpd-vhosts.conf /usr/local/apache2/conf/extra/. && cp torkalot.conf /usr/local/apache2/conf/extra/.
 
 	## move php.ini into place
-	cp ${srcdir}/${project}/php.ini /usr/local/lib/php.ini
+	cp ${srcdir}/torkalot/php.ini /usr/local/lib/php.ini
 
-	## set up a hosts file entry for ${project} virtual host
-	echo "127.0.0.1 ${project}" >> /etc/hosts
+	## set up a hosts file entry for the torkalot virtual host
+	echo "127.0.0.1 torkalot" >> /etc/hosts
 
 	## copy the web and configuration folders into /export
-	mkdir -p ${webroot}${project} && cd ${srcdir}/${project} 
-	if [ -d ${webroot}${project}/www ] ; then rm -rf ${webroot}${project}/www; fi; cp -R htdocs ${webroot}${project}/www
-	if [ -d /var/log/${project}] ; then touch /var/log/${project}/error.log; fi; else mkdir -p /var/log/lampshade && touch /var/log/lampshade/error.log 
+	mkdir -p /export/torkalot && cd ${srcdir}/torkalot 
+	cp -R htdocs /export/torkalot/www
+	cp -R htlibs /export/torkalot/etc
 
 	## done
 	echo "Installation completed - you can now start everything by running 'make start'"
+
+website:
+	## move the apache configs into place
+	cd ${srcdir}/torkalot && cp torkalot.conf /usr/local/apache2/conf/extra/.
+
+	## copy the web and configuration folders into /export
+	mkdir -p /export/torkalot && cd ${srcdir}/torkalot 
+	if [ -d /export/torkalot/www ] ; then rm -rf /export/torkalot/www; fi; cp -R htdocs /export/torkalot/www
+	if [ -d /export/torkalot/etc ] ; then rm -rf /export/torkalot/etc; fi; cp -R htlibs /export/torkalot/etc
+
+	## done
+	echo "Web directories, apache configurations and torkalot configurations are now in place"
 
 start:
 	## start mysql server 
@@ -110,14 +108,6 @@ start:
 	
 	## start apache
 	/usr/local/apache2/bin/apachectl start
-
-stop:
-	## start mysql server 
-	cd /usr/local/mysql && bin/mysqladmin shutdown
-	sleep 10
-	
-	## start apache
-	/usr/local/apache2/bin/apachectl stop
 
 restart:
 	## restart mysql server 
