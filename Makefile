@@ -40,7 +40,7 @@ all:
 
 	## install php
 	# http://uk1.php.net/distributions/php-5.5.10.tar.gz
-	cd ${srcdir} ; [ ! -e php-5.5.10.tar.gz ] && wget http://uk1.php.net/distributions/php-5.5.10.tar.gz; tar -zxvf php-5.5.10.tar.gz && cd php-5.5.10 && ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql  --enable-pdo --with-pdo-mysql=shared,/usr/local/mysql --with-zlib-dir=../zlib-1.2.8 --with-jpeg-dir=/usr/lib --with-curl --enable-soap --with-openssl && sudo make && sudo make install
+	cd ${srcdir} ; [ ! -e php-5.5.10.tar.gz ] && wget http://uk1.php.net/distributions/php-5.5.10.tar.gz; tar -zxvf php-5.5.10.tar.gz && cd php-5.5.10 && ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql --enable-pdo --with-pdo-mysql=/usr/local/mysql --with-zlib-dir=../zlib-1.2.8 --with-jpeg-dir=/usr/lib --with-curl --enable-soap --with-openssl --with-mysqli=/usr/local/mysql/bin/mysql_config && sudo make && sudo make install
 
 	## install pecl extensions
 	# PATH=$PATH:/usr/local/apache2/bin:/usr/local/bin && pecl install apc
